@@ -9,13 +9,14 @@
   <link rel="stylesheet" href="assets/css/style.css?v=20261118-3">
   <script src="assets/js/game.js?v=20261118-3" defer></script>
   <style>
-    .bottom-nav{position:fixed;z-index:20;left:50%;bottom:max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(560px,calc(100% - 26px));height:62px;display:flex;align-items:center;justify-content:space-around;gap:5px;padding:6px 10px;background:linear-gradient(180deg,#17243aee,#0d1525f5);border:1px solid #354760;border-radius:12px;box-shadow:0 12px 40px #000a,0 0 24px #28e0d014;backdrop-filter:blur(14px)}
-    .bottom-nav button{width:52px;height:48px;display:grid;place-items:center;background:transparent;border:1px solid transparent;border-radius:8px;color:#9eafc7;cursor:pointer;transition:.16s}
+    .bottom-nav{position:fixed;z-index:20;left:50%;bottom:max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(560px,calc(100% - 26px));height:70px;display:flex;align-items:center;justify-content:space-around;gap:4px;padding:6px 8px;background:linear-gradient(180deg,#17243aee,#0d1525f5);border:1px solid #354760;border-radius:12px;box-shadow:0 12px 40px #000a,0 0 24px #28e0d014;backdrop-filter:blur(14px)}
+    .bottom-nav button{flex:1;min-width:0;height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:transparent;border:1px solid transparent;border-radius:8px;color:#aebbd0;cursor:pointer;transition:.16s}
     .bottom-nav button:hover,.bottom-nav button:focus-visible{color:var(--cyan);background:#28e0d014;border-color:#28e0d044;outline:none}
-    .bottom-nav svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .bottom-nav svg{width:21px;height:21px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
     .bottom-nav button:first-child{color:var(--gold)}
-    body{padding-bottom:82px}
-    @media(max-width:760px){.bottom-nav{height:58px;bottom:max(8px,env(safe-area-inset-bottom));padding:5px 7px}.bottom-nav button{width:48px;height:46px}.bottom-nav svg{width:22px;height:22px}}
+    .bottom-nav button span{font:600 9px Inter,Arial,sans-serif;letter-spacing:.15px;white-space:nowrap}
+    body{padding-bottom:90px}
+    @media(max-width:760px){.bottom-nav{height:66px;bottom:max(8px,env(safe-area-inset-bottom));padding:4px 5px}.bottom-nav button{height:56px;gap:3px}.bottom-nav svg{width:20px;height:20px}.bottom-nav button span{font-size:8px}}
   </style>
 </head>
 <body>
@@ -88,19 +89,19 @@
 
     <nav class="bottom-nav" aria-label="Navegação social e competitiva">
       <button type="button" aria-label="Ranking: cidade, estado, país e mundial" title="Ranking: cidade, estado, país e mundial">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4v2a4 4 0 0 0 4 4M17 6h3v2a4 4 0 0 1-4 4"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M6 17h3v-5H6zM11 17h3V7h-3zM16 17h3V3h-3z"/></svg><span>Ranking</span>
       </button>
       <button type="button" aria-label="Amigos" title="Amigos">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM20 8v6M23 11h-6M16 15h2a4 4 0 0 1 4 4v2"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM20 8v6M23 11h-6M16 15h2a4 4 0 0 1 4 4v2"/></svg><span>Amigos</span>
       </button>
       <button type="button" aria-label="Loja" title="Loja">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18l-1.5 13h-15L3 8Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h18l-1.5 13h-15L3 8Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg><span>Loja</span>
       </button>
       <button type="button" aria-label="Clã" title="Clã">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 22 8-4V6l-8-4-8 4v12l8 4Z"/><path d="M8 10h8M8 14h8M12 6v12"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-8-4.2-8-10V5l8-3 8 3v6c0 5.8-8 10-8 10Z"/><path d="M8.5 13a3.5 3.5 0 0 1 7 0M12 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg><span>Clã</span>
       </button>
       <button type="button" aria-label="Torneios" title="Torneios">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 0 1-10 0V4Z"/><path d="M7 6H4v2a4 4 0 0 0 4 4M17 6h3v2a4 4 0 0 1-4 4M9 13h6"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v4a5 5 0 0 1-10 0V4ZM12 13v5M8 22h8M12 18v4M7 6H4v2a4 4 0 0 0 4 4M17 6h3v2a4 4 0 0 1-4 4"/></svg><span>Torneios</span>
       </button>
     </nav>
     <footer> D A M A&nbsp; R O Y A L E <span>•</span> VERSÃO 0.2.0</footer>
