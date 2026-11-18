@@ -6,9 +6,25 @@
   <meta name="theme-color" content="#090d18">
   <meta name="description" content="Dama Royale: jogo de damas brasileiras com visual competitivo.">
   <title>Dama Royale</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=20261118-4">
-  <script src="assets/js/game.js?v=20261118-4" defer></script>
+  <link rel="stylesheet" href="assets/css/style.css?v=20261118-5">
+  <script src="assets/js/game.js?v=20261118-5" defer></script>
   <style>
+    .menu-toggle{width:42px;height:42px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;background:#142238;border:1px solid #28e0d066;border-radius:9px;cursor:pointer}
+    .menu-toggle span{display:block;width:19px;height:2px;background:#28e0d0;border-radius:2px;transition:transform .18s,opacity .18s}
+    .menu-backdrop{position:fixed;inset:0;z-index:38;background:#020611b8;backdrop-filter:blur(3px)}
+    .side-menu{position:fixed;z-index:39;top:0;right:0;width:min(310px,86vw);height:100dvh;padding:24px 18px calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;background:linear-gradient(160deg,#17263e,#0b1220 72%);border-left:1px solid #28e0d055;box-shadow:-18px 0 50px #0009;transform:translateX(105%);transition:transform .24s ease}
+    .side-menu.open{transform:translateX(0)}
+    .side-menu-header{display:flex;align-items:center;justify-content:space-between;padding:4px 2px 22px;border-bottom:1px solid #ffffff18}
+    .side-menu-header strong{display:block;font:800 21px 'Barlow Condensed';letter-spacing:1.2px}
+    .side-menu-header strong b{color:var(--cyan)}
+    .side-menu-header small{display:block;margin-top:3px;color:var(--muted);font-size:8px;letter-spacing:2px}
+    .side-menu-header #menu-close{width:34px;height:34px;border:1px solid #ffffff25;border-radius:8px;background:#ffffff0b;color:#eaf2ff;font-size:25px;line-height:1;cursor:pointer}
+    .side-menu nav{display:grid;gap:8px;padding-top:20px}
+    .side-menu nav button{display:flex;align-items:center;gap:13px;width:100%;padding:14px 12px;text-align:left;border:1px solid transparent;border-radius:9px;background:#ffffff08;color:#e8effc;font:600 13px Inter,Arial,sans-serif;cursor:pointer}
+    .side-menu nav button:hover,.side-menu nav button:focus-visible{background:#28e0d014;border-color:#28e0d055;color:var(--cyan);outline:none}
+    .side-menu nav button span{width:22px;text-align:center;color:var(--cyan);font-size:20px}
+    .side-menu-footer{margin-top:auto;padding-top:18px;border-top:1px solid #ffffff18;color:#8292ad;font-size:8px;letter-spacing:1.5px;text-align:center}
+    body.menu-open{overflow:hidden}
     .bottom-nav{position:fixed;z-index:20;left:50%;bottom:max(10px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(560px,calc(100% - 26px));height:70px;display:flex;align-items:center;justify-content:space-around;gap:4px;padding:6px 8px;background:linear-gradient(180deg,#17243aee,#0d1525f5);border:1px solid #354760;border-radius:12px;box-shadow:0 12px 40px #000a,0 0 24px #28e0d014;backdrop-filter:blur(14px)}
     .bottom-nav button{flex:1;min-width:0;height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:transparent;border:1px solid transparent;border-radius:8px;color:#aebbd0;cursor:pointer;transition:.16s}
     .bottom-nav button:hover,.bottom-nav button:focus-visible{color:var(--cyan);background:#28e0d014;border-color:#28e0d044;outline:none}
@@ -25,8 +41,21 @@
   <main class="app-shell">
     <header class="topbar">
       <a class="brand" href="./" aria-label="Dama Royale início"><span><strong>DAMA <b>ROYALE</b></strong><small>ARENA DE DAMAS</small></span></a>
-      
+      <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="side-menu"><span></span><span></span><span></span></button>
     </header>
+    <div id="menu-backdrop" class="menu-backdrop" hidden></div>
+    <aside id="side-menu" class="side-menu" aria-hidden="true">
+      <div class="side-menu-header">
+        <div><strong>DAMA <b>ROYALE</b></strong><small>MENU PRINCIPAL</small></div>
+        <button id="menu-close" type="button" aria-label="Fechar menu">×</button>
+      </div>
+      <nav aria-label="Menu principal">
+        <button type="button" data-menu-action="home"><span>⌂</span> Início</button>
+        <button type="button" data-menu-action="modes"><span>♟</span> Modos de jogo</button>
+        <button type="button" data-menu-action="rules"><span>☷</span> Regras do jogo</button>
+      </nav>
+      <div class="side-menu-footer">ESTRATÉGIA • PRECISÃO • VITÓRIA</div>
+    </aside>
 
     <section id="home-screen" class="home-screen">
       <div class="hero">
@@ -123,6 +152,40 @@
         }, 0);
       });
       document.addEventListener('DOMContentLoaded', () => {
+        const menu = document.getElementById('side-menu');
+        const backdrop = document.getElementById('menu-backdrop');
+        const toggle = document.getElementById('menu-toggle');
+        const closeMenu = () => {
+          menu.classList.remove('open');
+          menu.setAttribute('aria-hidden', 'true');
+          backdrop.hidden = true;
+          toggle.setAttribute('aria-expanded', 'false');
+          document.body.classList.remove('menu-open');
+        };
+        const openMenu = () => {
+          menu.classList.add('open');
+          menu.setAttribute('aria-hidden', 'false');
+          backdrop.hidden = false;
+          toggle.setAttribute('aria-expanded', 'true');
+          document.body.classList.add('menu-open');
+        };
+        toggle.addEventListener('click', openMenu);
+        document.getElementById('menu-close').addEventListener('click', closeMenu);
+        backdrop.addEventListener('click', closeMenu);
+        document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
+        menu.querySelectorAll('[data-menu-action]').forEach(item => item.addEventListener('click', () => {
+          const action = item.dataset.menuAction;
+          closeMenu();
+          if (action === 'home' || action === 'modes') {
+            document.getElementById('game-screen').hidden = true;
+            document.getElementById('home-screen').hidden = false;
+            document.getElementById('mode-options').hidden = action !== 'modes';
+            if (action === 'modes') document.querySelector('.mode-grid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            else document.getElementById('mode-options').hidden = true;
+          } else if (action === 'rules') {
+            document.getElementById('rules-dialog').showModal();
+          }
+        }));
         let saved;
         try { saved = JSON.parse(sessionStorage.getItem(key) || 'null'); } catch (_) {}
         if (!saved || !['classic', 'royale'].includes(saved.mode)) return;
