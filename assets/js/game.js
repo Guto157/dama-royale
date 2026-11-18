@@ -123,7 +123,7 @@ function showResult(title,message){$('modal-title').textContent=title;$('modal-t
 function updateLevelDisplay(){
  const name=levelNames[$('difficulty').value]||'Iniciante';
  $('cpu-level').textContent='Nível '+name;
- $('active-game-title').textContent=activeMode==='royale'?'DESAFIO ROYALE':'SUA PARTIDA';
+ $('active-game-title').textContent=name.toLocaleUpperCase('pt-BR');
  $('active-mode-label').textContent=activeMode==='royale'?'MODO ROYALE':'MODO CLÁSSICO';
  $('royale-progress').hidden=activeMode!=='royale';
  $('streak-count').textContent=String(royaleWins);
