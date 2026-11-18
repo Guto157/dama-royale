@@ -112,3 +112,30 @@ footer{flex:none}
  .game-screen .game-layout{flex:none}
  .game-screen .control-panel{flex:none;margin-top:7px}
 }
+
+
+/* Opções dos modos em painel sobreposto, sem expandir a página */
+.home-screen{position:relative;overflow:visible}
+.mode-options{
+ position:absolute;
+ z-index:10;
+ top:50%;
+ left:50%;
+ transform:translate(-50%,-50%);
+ margin:0;
+ max-height:calc(100% - 20px);
+ overflow-y:auto;
+ overscroll-behavior:contain;
+ box-shadow:0 24px 80px #000d,0 0 0 100vmax #030711a8;
+}
+@media(max-width:760px){
+ .home-screen{overflow:visible}
+ .home-screen .hero{padding:clamp(8px,2.5vh,24px) 0}
+ .mode-options{
+  top:50%;
+  width:calc(100% - 8px);
+  max-width:500px;
+  max-height:calc(100% - 12px);
+  padding:16px;
+ }
+}
