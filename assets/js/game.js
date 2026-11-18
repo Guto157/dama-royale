@@ -7,6 +7,9 @@ const turnEl=document.getElementById('turn-label');
 const stateEl=document.getElementById('game-state');
 const $=id=>document.getElementById(id);
 let board=[],turn=HUMAN,selected=null,legalMoves=[],history=[],lastMove=null,locked=false,gameOver=false;
+let activeMode='classic',royaleStart='easy',royaleLevel='easy',royaleWins=0;
+const levelNames={easy:'Iniciante',medium:'Intermediário',hard:'Avançado'};
+const randomLevel=()=>['easy','medium','hard'][Math.floor(Math.random()*3)];
 const inside=(r,c)=>r>=0&&r<8&&c>=0&&c<8;
 const clone=b=>b.map(row=>row.map(p=>p?{...p}:null));
 const enemy=color=>color===HUMAN?CPU:HUMAN;
@@ -90,7 +93,7 @@ function clickSquare(r,c){
 function finishTurn(){
  turn=enemy(turn);selected=null;legalMoves=[];
  const moves=allMoves(board,turn);
- if(count(turn)===0||moves.length===0){gameOver=true;render();showResult(turn===CPU?'Você venceu!':'O Royal Bot venceu!',turn===CPU?'Excelente estratégia. Você dominou o tabuleiro.':'Dessa vez o bot levou a melhor. Tente novamente e ajuste sua estratégia.');return;}
+ if(count(turn)===0||moves.length===0){gameOver=true;render();const won=turn===CPU;showResult(won?'Você venceu!':'O Royal Bot venceu!',won?'Excelente estratégia. Você dominou o tabuleiro.':'Dessa vez o bot levou a melhor. Tente novamente e ajuste sua estratégia.');if(activeMode==='royale'&&won){royaleWins++;$('streak-count').textContent=String(royaleWins);$('modal-text').textContent='Vitórias consecutivas: '+royaleWins+'. Continue para o próximo nível.';}else if(activeMode==='royale')$('modal-text').textContent='Sua sequência terminou com '+royaleWins+' vitória(s) consecutiva(s).';return;}
  render();
  if(turn===CPU){locked=true;hintEl.textContent='O Royal Bot está calculando...';setTimeout(cpuTurn,450);}
  else hintEl.textContent='Sua vez. Boa partida!';
@@ -112,16 +115,61 @@ function chooseCpuMove(){
  return chosen;
 }
 function cpuTurn(){
- if(gameOver)return;const move=chooseCpuMove();if(!move){locked=false;gameOver=true;showResult('Você venceu!','O Royal Bot não tem movimentos disponíveis.');render();return;}
+ if(gameOver)return;const move=chooseCpuMove();if(!move){locked=false;gameOver=true;showResult('Você venceu!','O Royal Bot não tem movimentos disponíveis.');if(activeMode==='royale'){royaleWins++;$('streak-count').textContent=String(royaleWins);$('modal-text').textContent='Vitórias consecutivas: '+royaleWins+'. Continue para o próximo nível.';}render();return;}
  history.push({board:clone(board),turn,lastMove});board=execute(board,move);lastMove=move;locked=false;render();finishTurn();
 }
-function showResult(title,message){$('modal-title').textContent=title;$('modal-text').textContent=message;$('message-dialog').showModal();}
-function newGame(){board=initial();turn=HUMAN;selected=null;legalMoves=[];history=[];lastMove=null;locked=false;gameOver=false;hintEl.textContent='Selecione uma peça para ver os movimentos possíveis.';$('undo').disabled=true;render();}
+function showResult(title,message){$('modal-title').textContent=title;$('modal-text').textContent=message;$('modal-close').textContent=activeMode==='royale'?(title==='Você venceu!'?'PRÓXIMO DESAFIO':'VOLTAR AOS MODOS'):'CONTINUAR';$('message-dialog').showModal();}
+
+function updateLevelDisplay(){
+ const name=levelNames[$('difficulty').value]||'Iniciante';
+ $('cpu-level').textContent='Nível '+name;
+ $('active-game-title').textContent=activeMode==='royale'?'DESAFIO ROYALE':'SUA PARTIDA';
+ $('active-mode-label').textContent=activeMode==='royale'?'MODO ROYALE':'MODO CLÁSSICO';
+ $('royale-progress').hidden=activeMode!=='royale';
+ $('streak-count').textContent=String(royaleWins);
+ document.querySelector('.difficulty-group').hidden=activeMode==='royale';
+}
+function newGame(){board=initial();turn=HUMAN;selected=null;legalMoves=[];history=[];lastMove=null;locked=false;gameOver=false;hintEl.textContent='Selecione uma peça para ver os movimentos possíveis.';$('undo').disabled=true;updateLevelDisplay();render();}
+function openGame(mode,level){
+ activeMode=mode;
+ if(mode==='royale'){royaleStart=level;royaleLevel=level==='random'?randomLevel():level;royaleWins=0;$('difficulty').value=royaleLevel;}
+ else $('difficulty').value=level;
+ $('home-screen').hidden=true;$('game-screen').hidden=false;newGame();
+}
+function showHome(){$('game-screen').hidden=true;$('home-screen').hidden=false;$('mode-options').hidden=true;}
+function showOptions(mode){
+ const title=$('options-title'),desc=$('options-description'),list=$('options-list');
+ $('mode-options').hidden=false;list.innerHTML='';
+ const add=(label,sub,action)=>{const b=document.createElement('button');b.className='option-button';b.innerHTML=label+'<small>'+sub+'</small>';b.addEventListener('click',action);list.appendChild(b);};
+ if(mode==='online'){
+  $('options-eyebrow').textContent='JOGUE COM OUTRAS PESSOAS';title.textContent='Escolha como conectar';desc.textContent='Selecione a forma de encontrar seu adversário.';
+  add('BLUETOOTH','Partida entre aparelhos próximos',()=>showResult('Bluetooth em preparação','A conexão Bluetooth será implementada na etapa multiplayer.'));
+  add('ONLINE','Partida pela internet',()=>showResult('Online em preparação','As partidas pela internet serão ativadas na etapa multiplayer.'));
+ }else{
+  const royale=mode==='royale';$('options-eyebrow').textContent=royale?'SUA SEQUÊNCIA COMEÇA AQUI':'ESCOLHA A DIFICULDADE';
+  title.textContent=royale?'Escolha seu desafio':'Nível da inteligência artificial';
+  desc.textContent=royale?'Vença para avançar. No aleatório, o nível muda a cada partida.':'Escolha o nível do adversário para iniciar a partida.';
+  add('INICIANTE',royale?'Começa fácil e avança até Avançado':'Para começar e aprender',()=>openGame(mode,'easy'));
+  add('INTERMEDIÁRIO',royale?'Começa no intermediário e avança':'Desafio equilibrado',()=>openGame(mode,'medium'));
+  add('AVANÇADO',royale?'Começa e permanece no nível máximo':'Para jogadores experientes',()=>openGame(mode,'hard'));
+  if(royale)add('ALEATÓRIO','Um nível sorteado a cada partida',()=>openGame(mode,'random'));
+ }
+}
+function nextRoyale(){
+ if(royaleStart==='random')royaleLevel=randomLevel();
+ else if(royaleStart==='easy')royaleLevel=royaleWins===1?'medium':'hard';
+ else royaleLevel='hard';
+ $('difficulty').value=royaleLevel;newGame();
+}
+
 $('new-game').addEventListener('click',newGame);
 $('undo').addEventListener('click',()=>{if(history.length<2||locked)return;history.pop();const prev=history.pop();board=prev.board;turn=prev.turn;lastMove=prev.lastMove;selected=null;legalMoves=[];gameOver=false;locked=false;render();hintEl.textContent='Última rodada desfeita.';});
-$('difficulty').addEventListener('change',()=>{$('cpu-level').textContent={easy:'Inteligência iniciante',medium:'Inteligência intermediária',hard:'Inteligência avançada'}[$('difficulty').value];});
-$('modal-close').addEventListener('click',()=>$('message-dialog').close());
+$('difficulty').addEventListener('change',updateLevelDisplay);
+$('modal-close').addEventListener('click',()=>{const won=$('modal-title').textContent==='Você venceu!';$('message-dialog').close();if(activeMode==='royale'){if(won)nextRoyale();else showHome();}});
 $('rules').addEventListener('click',()=>$('rules-dialog').showModal());
 $('rules-close').addEventListener('click',()=>$('rules-dialog').close());
+document.querySelectorAll('[data-mode]').forEach(button=>button.addEventListener('click',()=>showOptions(button.dataset.mode)));
+$('back-home').addEventListener('click',()=>$('mode-options').hidden=true);
+$('back-modes').addEventListener('click',showHome);
 newGame();
 })();

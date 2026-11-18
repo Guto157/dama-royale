@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#090d18">
   <meta name="description" content="Dama Royale: jogo de damas brasileiras com visual competitivo.">
   <title>Dama Royale</title>
-  <link rel="stylesheet" href="assets/css/style.css?v=20261118-1">
-  <script src="assets/js/game.js?v=20261118-1" defer></script>
+  <link rel="stylesheet" href="assets/css/style.css?v=20261118-3">
+  <script src="assets/js/game.js?v=20261118-3" defer></script>
 </head>
 <body>
   <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
@@ -17,49 +17,66 @@
       <div class="top-status"><span class="live-dot"></span> MODO TREINO <span class="status-divider">•</span> BRASIL</div>
     </header>
 
-    <section class="hero">
-      <div class="eyebrow">ESTRATÉGIA • PRECISÃO • VITÓRIA</div>
-      <h1>DOMINE O <span>TABULEIRO.</span></h1>
-      <p>Uma partida. Cada movimento importa.</p>
-    </section>
-
-    <section class="game-layout">
-      <aside class="player-card opponent-card">
-        <div class="player-avatar cpu-avatar">AI</div>
-        <div class="player-info"><small>OPONENTE</small><strong>ROYAL BOT</strong><span id="cpu-level">Inteligência intermediária</span></div>
-        <div class="piece-count"><span class="piece mini-piece light-piece"></span><b id="black-count">12</b></div>
-      </aside>
-
-      <section class="board-panel" aria-label="Área do jogo">
-        <div class="board-topline"><span id="turn-label">SUA VEZ</span><span id="game-state">PARTIDA EM ANDAMENTO</span></div>
-        <div class="board-frame">
-          <div class="board-coordinates left-coords"><span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div>
-          <div id="board" class="board" role="grid" aria-label="Tabuleiro de damas"></div>
-          <div class="board-coordinates bottom-coords"><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span><span>G</span><span>H</span></div>
-        </div>
-        <div class="board-hint" id="hint">Selecione uma peça para ver os movimentos possíveis.</div>
+    <section id="home-screen" class="home-screen">
+      <div class="hero">
+        <div class="eyebrow">ESTRATÉGIA • PRECISÃO • VITÓRIA</div>
+        <h1>ESCOLHA SUA <span>ARENA.</span></h1>
+        <p>Três modos. Um tabuleiro. Sua próxima vitória começa aqui.</p>
+      </div>
+      <div class="mode-grid">
+        <button class="mode-card mode-online" data-mode="online"><span class="mode-icon">◎</span><strong>ONLINE</strong><small>Desafie outros jogadores</small></button>
+        <button class="mode-card mode-classic" data-mode="classic"><span class="mode-icon">♟</span><strong>CLÁSSICO</strong><small>Treine contra a inteligência artificial</small></button>
+        <button class="mode-card mode-royale" data-mode="royale"><span class="mode-icon">♛</span><strong>ROYALE</strong><small>Vença partidas e aumente sua sequência</small></button>
+      </div>
+      <section id="mode-options" class="mode-options" hidden>
+        <button id="back-home" class="btn btn-ghost back-home">← VOLTAR</button>
+        <div class="eyebrow" id="options-eyebrow">SELECIONE</div>
+        <h2 id="options-title">Escolha sua modalidade</h2>
+        <p id="options-description"></p>
+        <div id="options-list" class="options-list"></div>
       </section>
-
-      <aside class="player-card user-card">
-        <div class="player-avatar user-avatar">EU</div>
-        <div class="player-info"><small>JOGADOR</small><strong>VOCÊ</strong><span>Peças claras</span></div>
-        <div class="piece-count"><span class="piece mini-piece dark-piece"></span><b id="white-count">12</b></div>
-      </aside>
     </section>
 
-    <section class="control-panel">
-      <div class="control-group difficulty-group"><label for="difficulty">NÍVEL DA IA</label><select id="difficulty"><option value="easy">Iniciante</option><option value="medium" selected>Intermediário</option><option value="hard">Avançado</option></select></div>
-      <button id="new-game" class="btn btn-primary"><span>＋</span> NOVA PARTIDA</button>
-      <button id="undo" class="btn btn-secondary" disabled>↶ DESFAZER</button>
-      <button id="rules" class="btn btn-ghost">REGRAS</button>
+    <section id="game-screen" class="game-screen" hidden>
+      <div class="game-screen-heading">
+        <button id="back-modes" class="btn btn-ghost">← MODOS</button>
+        <div><div class="eyebrow" id="active-mode-label">MODO CLÁSSICO</div><h2 id="active-game-title">SUA PARTIDA</h2></div>
+        <div id="royale-progress" class="royale-progress" hidden><small>VITÓRIAS SEGUIDAS</small><strong id="streak-count">0</strong></div>
+      </div>
+      <section class="game-layout">
+        <aside class="player-card opponent-card">
+          <div class="player-avatar cpu-avatar">AI</div>
+          <div class="player-info"><small>OPONENTE</small><strong>ROYAL BOT</strong><span id="cpu-level">Inteligência iniciante</span></div>
+          <div class="piece-count"><span class="piece mini-piece light-piece"></span><b id="black-count">12</b></div>
+        </aside>
+        <section class="board-panel" aria-label="Área do jogo">
+          <div class="board-topline"><span id="turn-label">SUA VEZ</span><span id="game-state">PARTIDA EM ANDAMENTO</span></div>
+          <div class="board-frame">
+            <div class="board-coordinates left-coords"><span>8</span><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span></div>
+            <div id="board" class="board" role="grid" aria-label="Tabuleiro de damas"></div>
+            <div class="board-coordinates bottom-coords"><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span><span>G</span><span>H</span></div>
+          </div>
+          <div class="board-hint" id="hint">Selecione uma peça para ver os movimentos possíveis.</div>
+        </section>
+        <aside class="player-card user-card">
+          <div class="player-avatar user-avatar">EU</div>
+          <div class="player-info"><small>JOGADOR</small><strong>VOCÊ</strong><span>Peças claras</span></div>
+          <div class="piece-count"><span class="piece mini-piece dark-piece"></span><b id="white-count">12</b></div>
+        </aside>
+      </section>
+      <section class="control-panel">
+        <div class="control-group difficulty-group"><label for="difficulty">NÍVEL DA IA</label><select id="difficulty"><option value="easy">Iniciante</option><option value="medium">Intermediário</option><option value="hard">Avançado</option></select></div>
+        <button id="new-game" class="btn btn-primary"><span>＋</span> NOVA PARTIDA</button>
+        <button id="undo" class="btn btn-secondary" disabled>↶ DESFAZER</button>
+        <button id="rules" class="btn btn-ghost">REGRAS</button>
+      </section>
     </section>
-
     <section class="info-strip">
       <div><span class="info-icon">♛</span><span><b>DAMAS BRASILEIRAS</b><small>Tabuleiro 8×8 • Captura obrigatória</small></span></div>
       <div><span class="info-icon">⚡</span><span><b>JOGUE NO SEU RITMO</b><small>Treine e evolua sua estratégia</small></span></div>
       <div><span class="info-icon">◆</span><span><b>FEITO PARA COMPETIR</b><small>Sua arena começa aqui</small></span></div>
     </section>
-    <footer> D A M A&nbsp; R O Y A L E <span>•</span> VERSÃO 0.1.0</footer>
+    <footer> D A M A&nbsp; R O Y A L E <span>•</span> VERSÃO 0.2.0</footer>
   </main>
 
   <dialog id="message-dialog" class="modal">
