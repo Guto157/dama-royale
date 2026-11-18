@@ -72,7 +72,7 @@ function render(){
   const p=board[r][c];if(p){const piece=document.createElement('span');piece.className='piece-on-board '+(p.color===HUMAN?'white':'black')+(p.king?' king':'');sq.appendChild(piece);}
   sq.addEventListener('click',()=>clickSquare(r,c));boardEl.appendChild(sq);
  }
- $('white-count').textContent=count(HUMAN);$('black-count').textContent=count(CPU);
+ $('white-count').textContent=count(HUMAN);$('black-count').textContent=count(CPU);$('undo').disabled=!(turn===HUMAN&&history.length>=2&&!locked);
  turnEl.textContent=gameOver?'PARTIDA ENCERRADA':turn===HUMAN?'SUA VEZ':'VEZ DO ROYAL BOT';
  stateEl.textContent=gameOver?'FIM DE JOGO':turn===HUMAN?'AGUARDANDO SEU MOVIMENTO':'IA PENSANDO';
 }
@@ -118,7 +118,7 @@ function cpuTurn(){
 function showResult(title,message){$('modal-title').textContent=title;$('modal-text').textContent=message;$('message-dialog').showModal();}
 function newGame(){board=initial();turn=HUMAN;selected=null;legalMoves=[];history=[];lastMove=null;locked=false;gameOver=false;hintEl.textContent='Selecione uma peça para ver os movimentos possíveis.';$('undo').disabled=true;render();}
 $('new-game').addEventListener('click',newGame);
-$('undo').addEventListener('click',()=>{if(!history.length||locked)return;const prev=history.pop();board=prev.board;turn=prev.turn;lastMove=prev.lastMove;selected=null;legalMoves=[];gameOver=false;locked=false;render();$('undo').disabled=history.length===0;hintEl.textContent='Último movimento desfeito.';});
+$('undo').addEventListener('click',()=>{if(history.length<2||locked)return;history.pop();const prev=history.pop();board=prev.board;turn=prev.turn;lastMove=prev.lastMove;selected=null;legalMoves=[];gameOver=false;locked=false;render();hintEl.textContent='Última rodada desfeita.';});
 $('difficulty').addEventListener('change',()=>{$('cpu-level').textContent={easy:'Inteligência iniciante',medium:'Inteligência intermediária',hard:'Inteligência avançada'}[$('difficulty').value];});
 $('modal-close').addEventListener('click',()=>$('message-dialog').close());
 $('rules').addEventListener('click',()=>$('rules-dialog').showModal());
