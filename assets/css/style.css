@@ -139,3 +139,10 @@ footer{flex:none}
   padding:16px;
  }
 }
+
+
+/* Reserva espaço para a navegação fixa e evita que ela cubra os controles da partida */
+.game-screen{padding-bottom:86px;box-sizing:border-box}
+@media(max-width:760px){
+ .game-screen{padding-bottom:82px}
+}
